@@ -1,0 +1,24 @@
+# Railway deployment config
+[build]
+builder = "nixpacks"
+
+[build.nixpacks]
+aptPkgs = ["python3"]
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[[services]]
+# Main web service
+name = "web"
+protocol = "http"
+port = 3001
+
+[variables]
+NODE_ENV = "production"
+PORT = "3001"
+JWT_SECRET = "change-this-in-railway-dashboard"
