@@ -2,7 +2,7 @@
 providers = ["node"]
 
 [phases.setup]
-nixPkgs = ["nodejs_18", "python3"]
+nixPkgs = ["nodejs_20", "python3"]
 
 [phases.install]
 cmds = ["npm install", "cd server && npm install"]
