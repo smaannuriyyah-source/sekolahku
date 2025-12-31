@@ -11,12 +11,20 @@ router.post('/', authenticate, upload.single('image'), (req, res) => {
             return res.status(400).json({ error: 'Tidak ada file yang diupload' });
         }
 
-        const imageUrl = `/uploads/${req.file.filename}`;
+        // Cloudinary returns path property, local storage uses filename
+        let imageUrl;
+        if (req.file.path && req.file.path.startsWith('http')) {
+            // Cloudinary URL
+            imageUrl = req.file.path;
+        } else {
+            // Local file path
+            imageUrl = `/uploads/${req.file.filename}`;
+        }
 
         res.json({
             message: 'Gambar berhasil diupload',
             url: imageUrl,
-            filename: req.file.filename,
+            filename: req.file.filename || req.file.public_id,
             originalName: req.file.originalname,
             size: req.file.size
         });
