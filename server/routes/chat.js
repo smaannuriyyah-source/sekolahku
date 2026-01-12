@@ -1,7 +1,11 @@
 import express from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getRAGContext, loadAllDocuments } from '../services/ragService.js';
 
 const router = express.Router();
+
+// Preload RAG documents at startup
+loadAllDocuments();
 
 const SCHOOL_CONTEXT = `
 You are Nuri, asisten AI dari SMA Annuriyyah Bumiayu.
@@ -153,7 +157,16 @@ router.post('/', async (req, res) => {
             },
         });
 
-        const result = await chat.sendMessage(message);
+        // Get relevant context from RAG
+        const ragContext = getRAGContext(message);
+        console.log('RAG context found:', ragContext ? 'Yes' : 'No');
+
+        // Combine message with RAG context
+        const enhancedMessage = ragContext
+            ? `${ragContext}\n\nPERTANYAAN PENGGUNA: ${message}`
+            : message;
+
+        const result = await chat.sendMessage(enhancedMessage);
         const response = await result.response;
         const responseText = response.text();
 
