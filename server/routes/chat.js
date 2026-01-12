@@ -121,8 +121,11 @@ router.post('/', async (req, res) => {
 
         const apiKey = process.env.GEMINI_API_KEY;
 
+        console.log('Chat request received, message:', message.substring(0, 50) + '...');
+        console.log('GEMINI_API_KEY exists:', !!apiKey, 'Length:', apiKey ? apiKey.length : 0);
+
         if (!apiKey) {
-            console.error('GEMINI_API_KEY is not set');
+            console.error('GEMINI_API_KEY is not set in environment variables');
             return res.status(500).json({
                 error: 'AI service tidak tersedia',
                 response: 'Maaf, saat ini saya sedang mengalami gangguan koneksi. Silakan coba lagi nanti.'
@@ -131,6 +134,7 @@ router.post('/', async (req, res) => {
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        console.log('Using model: gemini-2.0-flash');
 
         const chat = model.startChat({
             history: [
@@ -158,10 +162,12 @@ router.post('/', async (req, res) => {
             response: responseText
         });
     } catch (error) {
-        console.error('Error calling Gemini API:', error);
+        console.error('Error calling Gemini API:', error.message);
+        console.error('Full error stack:', error.stack);
         res.status(500).json({
             error: 'Gagal memproses pesan',
-            response: 'Maaf, saat ini saya sedang mengalami gangguan koneksi. Silakan coba lagi nanti.'
+            response: 'Maaf, saat ini saya sedang mengalami gangguan koneksi. Silakan coba lagi nanti.',
+            errorMessage: error.message
         });
     }
 });
