@@ -18,6 +18,7 @@ import dashboardRoutes from './routes/dashboard.js';
 import registrationsRoutes from './routes/registrations.js';
 import publicRoutes from './routes/public.js';
 import uploadRoutes from './routes/upload.js';
+import chatRoutes from './routes/chat.js';
 
 // Load environment variables
 dotenv.config();
@@ -47,6 +48,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/registrations', registrationsRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
